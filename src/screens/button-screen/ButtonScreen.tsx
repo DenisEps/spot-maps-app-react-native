@@ -1,5 +1,11 @@
 import React from 'react';
-import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
+import {
+  SafeAreaView,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import styled from 'styled-components';
 
 import {ROUTES} from '../../navigation/Routes';
@@ -36,34 +42,35 @@ interface StartScreenProps {
 export const ButtonScreen: React.FC<StartScreenProps> = ({navigation}) => {
   return (
     <Container>
-      <ButtonContainer style={styles.ButtonContainerBlack}>
-        <ButtonContainer style={styles.ButtonContainerWhite}>
-          <ButtonText>Начать</ButtonText>
+      <TouchableOpacity
+        onPress={() => navigation.navigate(ROUTES.ChooseLocationScreen)}>
+        <ButtonContainer style={styles.buttonContainerBlack}>
+          <ButtonContainer style={styles.buttonContainerWhite}>
+            <ButtonText>Начать</ButtonText>
+          </ButtonContainer>
         </ButtonContainer>
-      </ButtonContainer>
+      </TouchableOpacity>
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  ButtonContainerWhite: {
+  buttonContainerWhite: {
     shadowColor: 'white',
     shadowOffset: {
       width: -10,
       height: -10,
     },
     shadowOpacity: 1,
-    shadowRadius: 20.0,
-    elevation: 16,
+    shadowRadius: 9,
   },
-  ButtonContainerBlack: {
+  buttonContainerBlack: {
     shadowColor: '#97A7C3',
     shadowOffset: {
       width: 10,
       height: 10,
     },
-    shadowOpacity: 0.5,
-    shadowRadius: 20.0,
-    elevation: 16,
+    shadowOpacity: 0.6,
+    shadowRadius: 15.0,
   },
 });
