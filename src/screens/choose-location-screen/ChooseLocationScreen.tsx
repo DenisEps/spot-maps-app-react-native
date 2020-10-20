@@ -2,11 +2,12 @@ import React from 'react';
 import {View, StyleSheet, SafeAreaView, Text} from 'react-native';
 import styled from 'styled-components';
 
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 
 import Arrow from '../../assets/Arrow.svg';
 import Xbutton from '../../assets/Xbutton.svg';
 import Location_Icon from '../../assets/Location_Icon.svg';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const Container = styled(SafeAreaView)`
   flex: 1;
@@ -63,7 +64,6 @@ const BackButtonContainer = styled(View)`
 
 const MainContainer = styled(View)`
   padding: 0 20px;
-  align-items: center;
 `;
 
 const MainText = styled(Text)`
@@ -71,30 +71,43 @@ const MainText = styled(Text)`
   font-size: 30px;
   font-weight: 700;
   color: #707070;
+  margin-bottom: 10px;
 `;
 
 const MapViewContainer = styled(MapView)`
+  flex: 1;
   border-radius: 23px;
-  width: 335px;
-  height: 290px;
 `;
 
 const FooterContainer = styled(View)`
-  /* padding: 0 20px; */
-  background-color: coral;
+  padding: 0 20px;
+  flex: 1;
+  justify-content: flex-end;
+  padding-bottom: ${(props: any) => (props.isSafeArea !== 0 ? '16px' : '50px')};
 `;
 
-const FooterButton = styled(View)`
-  justify-content: center;
-  align-items: center;
+const FooterButtonContainerOut = styled(View)`
   background-color: #ecf0f3;
-  height: 47px;
-  width: 100px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
   border-radius: 23.5px;
+`;
+
+const FooterButtonContainerIn = styled(View)`
+  background-color: #ecf0f3;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 23.5px;
+  width: 100%;
+  height: 100%;
 `;
 
 const FooterButtonText = styled(Text)`
   font-size: 20px;
+  font-weight: 700;
+  color: #707070;
 `;
 
 interface ChooseLocationScreenProps {}
@@ -103,12 +116,42 @@ interface Marker {
   coordinate: {latitude: number; longitude: number};
 }
 
+type Coords = {latitude: number; longitude: number};
+
+const initialRegion = {
+  latitude: 55.750976,
+  longitude: 37.615932,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+
 export const ChooseLocationScreen: React.FC<ChooseLocationScreenProps> = ({}) => {
-  const [markerState, setMarkerState] = React.useState(null);
+  const mapRef = React.useRef<MapView>(null);
+  const {bottom} = useSafeAreaInsets();
+
+  const [markerState, setMarkerState] = React.useState<Coords | null>(null);
 
   const handlePress = ({nativeEvent: {coordinate}}) => {
-    setMarkerState({coordinate});
+    setMarkerState(coordinate);
   };
+
+  const animateToRegion = () => {
+    if (!mapRef.current) {
+      return;
+    }
+    const region = {
+      latitude: markerState?.latitude || initialRegion.latitude,
+      longitude: markerState?.longitude || initialRegion.longitude,
+      latitudeDelta: initialRegion.latitudeDelta,
+      longitudeDelta: initialRegion.longitudeDelta,
+    };
+    mapRef.current.animateToRegion(region);
+  };
+
+  React.useEffect(() => {
+    animateToRegion();
+    // eslint-disable-next-line
+  }, [markerState]);
 
   return (
     <Container>
@@ -135,39 +178,30 @@ export const ChooseLocationScreen: React.FC<ChooseLocationScreenProps> = ({}) =>
 
       <MainContainer>
         <MainText>Выберите вашу геопозицию</MainText>
-        {markerState === null ? (
+        <View style={{height: 290}}>
           <MapViewContainer
-            initialRegion={{
-              latitude: 55.750976,
-              longitude: 37.615932,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            onPress={handlePress}
-          />
-        ) : (
-          <MapViewContainer
-            region={{...markerState.coordinate}}
-            initialRegion={{
-              latitude: 55.750976,
-              longitude: 37.615932,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
+            ref={mapRef}
+            showsUserLocation
+            initialRegion={initialRegion}
             onPress={handlePress}>
-            <Marker
-              coordinate={markerState.coordinate}
-              image={require('../../assets/Maps_Icon.png')}
-              centerOffset={{x: -2, y: -29}}
-            />
+            {markerState ? (
+              <Marker
+                coordinate={markerState}
+                image={require('../../assets/Maps_Icon.png')}
+                centerOffset={{x: -2, y: -29}}
+              />
+            ) : null}
           </MapViewContainer>
-        )}
+        </View>
       </MainContainer>
-
-      <FooterContainer>
-        <FooterButton>
-          <FooterButtonText>Выбрать</FooterButtonText>
-        </FooterButton>
+      <FooterContainer isSafeArea={bottom}>
+        {/* if bottom === 0 то это iPhone 7 => padding 50  */}
+        {/* if bottom !== 0 то это iPhone 11 => padding (50 - bottom) */}
+        <FooterButtonContainerOut style={styles.smallRoundBtnWhite}>
+          <FooterButtonContainerIn style={styles.smallRoundBtnBlack}>
+            <FooterButtonText>Выбрать</FooterButtonText>
+          </FooterButtonContainerIn>
+        </FooterButtonContainerOut>
       </FooterContainer>
     </Container>
   );
