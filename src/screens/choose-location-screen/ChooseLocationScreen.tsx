@@ -5,16 +5,12 @@ import styled from 'styled-components';
 
 import MapView, {Marker} from 'react-native-maps';
 
-import Arrow from '../../assets/Arrow.svg';
-import Xbutton from '../../assets/Xbutton.svg';
-import Location_Icon from '../../assets/Location_Icon.svg';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ROUTES} from '../../navigation/Routes';
 
 import {HeaderComponent} from '../../components/header-component/HeaderComponent';
 
 import {Context} from '../../Context';
-import {Header} from 'react-native/Libraries/NewAppScreen';
 
 const Container = styled(SafeAreaView)`
   flex: 1;

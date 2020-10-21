@@ -4,4 +4,5 @@ export const ROUTES = {
   ChooseLocationScreen: 'ChooseLocationScreen',
   SendLocationScreen: 'SendLocationScreen',
   CheckScreen: 'CheckScreen',
+  QuitScreen: 'QuitScreen',
 };

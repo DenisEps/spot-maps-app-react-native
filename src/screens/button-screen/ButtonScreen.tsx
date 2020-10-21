@@ -25,8 +25,6 @@ const ButtonContainer = styled(View)`
   height: 106px;
   border-radius: 16px;
   border-color: #000;
-  /* box-shadow: -10px -10px 20px rgba(255, 255, 255, 1);
-  box-shadow: 10px 10px 20px rgba(151, 167, 195, 0.5); */
 `;
 
 const ButtonText = styled(Text)`

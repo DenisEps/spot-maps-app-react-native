@@ -7,6 +7,7 @@ import {ButtonScreen} from '../screens/button-screen/ButtonScreen';
 import {ChooseLocationScreen} from '../screens/choose-location-screen/ChooseLocationScreen';
 import {SendLocationScreen} from '../screens/send-location-screen/SendLocationScreen';
 import {CheckScreen} from '../screens/check-screen/CheckScreen';
+import {QuitScreen} from '../screens/quit-screen/QuitScreen';
 
 import {Context} from '../Context';
 
@@ -33,6 +34,7 @@ export const MainStackContainer: React.FC<MainStackProps> = ({}) => {
           component={SendLocationScreen}
         />
         <MainStack.Screen name={ROUTES.CheckScreen} component={CheckScreen} />
+        <MainStack.Screen name={ROUTES.QuitScreen} component={QuitScreen} />
       </MainStack.Navigator>
     </Context.Provider>
   );

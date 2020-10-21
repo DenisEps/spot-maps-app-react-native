@@ -20,7 +20,7 @@ const XButtonContainer = styled(View)`
   border-radius: 23.5px;
   justify-content: center;
   align-items: center;
-  opacity: ${(props) => (props.xbutton ? '0' : '1')};
+  opacity: ${(props) => (props.xbutton ? '1' : '0')};
 `;
 
 const MyLocButtonContainerOut = styled(View)`
@@ -68,13 +68,15 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
   backbutton,
   xbutton,
 }) => {
-  console.log(backbutton, xbutton);
-
   return (
     <HeaderContainer>
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <BackButtonContainer style={styles.smallRoundBtnWhite}>
-          <BackButtonContainer style={styles.smallRoundBtnBlack}>
+        <BackButtonContainer
+          backbutton={backbutton}
+          style={styles.smallRoundBtnWhite}>
+          <BackButtonContainer
+            backbutton={backbutton}
+            style={styles.smallRoundBtnBlack}>
             <Arrow style={styles.arrow} />
           </BackButtonContainer>
         </BackButtonContainer>
@@ -88,8 +90,8 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
       </MyLocButtonContainerOut>
 
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <XButtonContainer style={styles.smallRoundBtnWhite}>
-          <XButtonContainer style={styles.smallRoundBtnBlack}>
+        <XButtonContainer xbutton={xbutton} style={styles.smallRoundBtnWhite}>
+          <XButtonContainer xbutton={xbutton} style={styles.smallRoundBtnBlack}>
             <Xbutton />
           </XButtonContainer>
         </XButtonContainer>

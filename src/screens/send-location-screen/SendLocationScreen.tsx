@@ -3,9 +3,6 @@ import {View, StyleSheet, SafeAreaView, Text} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import styled from 'styled-components';
 
-import Arrow from '../../assets/Arrow.svg';
-import Xbutton from '../../assets/Xbutton.svg';
-import Location_Icon from '../../assets/Location_Icon.svg';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ROUTES} from '../../navigation/Routes';
 

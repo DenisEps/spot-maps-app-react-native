@@ -3,9 +3,6 @@ import {View, StyleSheet, SafeAreaView, Text, ScrollView} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import styled from 'styled-components';
 
-import Arrow from '../../assets/Arrow.svg';
-import Xbutton from '../../assets/Xbutton.svg';
-import Location_Icon from '../../assets/Location_Icon.svg';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {ROUTES} from '../../navigation/Routes';
@@ -15,61 +12,10 @@ import {Context} from '../../Context';
 import {PointButton} from '../../components/point-button/PointButton';
 import {HeaderComponent} from '../../components/header-component/HeaderComponent';
 
-// const {width} = Dimensions.get('window');
-
 const Container = styled(SafeAreaView)`
   flex: 1;
   background-color: #ecf0f3;
 `;
-
-// const HeaderContainer = styled(View)`
-//   padding: 30px;
-//   flex-direction: row;
-//   justify-content: space-between;
-// `;
-
-// const XButtonContainer = styled(View)`
-//   background-color: #ecf0f3;
-//   height: 47px;
-//   width: 47px;
-//   border-radius: 23.5px;
-//   justify-content: center;
-//   align-items: center;
-//   opacity: 0;
-// `;
-
-// const MyLocButtonContainerOut = styled(View)`
-//   background-color: #ecf0f3;
-//   width: 108px;
-//   height: 108px;
-//   border-radius: 54px;
-//   margin-top: 11px;
-// `;
-
-// const MyLocButtonContainerIn = styled(View)`
-//   background-color: #ecf0f3;
-//   width: 108px;
-//   height: 108px;
-//   border-radius: 54px;
-//   justify-content: space-between;
-//   align-items: center;
-//   padding: 12px 0 18px 0;
-// `;
-
-// const MyLocText = styled(Text)`
-//   font-size: 16px;
-//   font-weight: 700;
-//   color: #707070;
-// `;
-
-// const BackButtonContainer = styled(View)`
-//   background-color: #ecf0f3;
-//   height: 47px;
-//   width: 47px;
-//   border-radius: 23.5px;
-//   justify-content: center;
-//   align-items: center;
-// `;
 
 const MainContainer = styled(View)`
   /* padding: 0 20px; */
@@ -207,7 +153,7 @@ export const CheckScreen: React.FC<CheckScreenProps> = ({navigation}) => {
 
   return (
     <Container>
-      <HeaderComponent navigation={navigation} xbutton={false} backbutton />
+      <HeaderComponent navigation={navigation} backbutton xbutton={false} />
 
       <MainContainer>
         <MainText>Проверьте добавленные точки</MainText>
