@@ -1,9 +1,7 @@
 import React from 'react';
-import {View, StyleSheet, SafeAreaView, Text, Alert} from 'react-native';
+import {View, StyleSheet, SafeAreaView, Text} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import styled from 'styled-components';
-
-import MapView, {Marker} from 'react-native-maps';
 
 import Arrow from '../../assets/Arrow.svg';
 import Xbutton from '../../assets/Xbutton.svg';
@@ -31,6 +29,7 @@ const XButtonContainer = styled(View)`
   border-radius: 23.5px;
   justify-content: center;
   align-items: center;
+  opacity: 0;
 `;
 
 const MyLocButtonContainerOut = styled(View)`
@@ -64,13 +63,11 @@ const BackButtonContainer = styled(View)`
   border-radius: 23.5px;
   justify-content: center;
   align-items: center;
-  opacity: 0;
 `;
 
 const MainContainer = styled(View)`
   padding: 0 20px;
 `;
-
 const MainText = styled(Text)`
   align-self: flex-start;
   font-size: 30px;
@@ -79,10 +76,31 @@ const MainText = styled(Text)`
   margin-bottom: 10px;
   line-height: 39px;
 `;
-
-const MapViewContainer = styled(MapView)`
+const CoordMainContainer = styled(View)`
+  margin-top: 75px;
+`;
+const CoordEntryContainer = styled(View)`
+  flex-direction: row;
+  align-items: center;
+`;
+const CoordNameText = styled(Text)`
+  font-weight: 700;
+  color: #707070;
+  font-size: 20px;
+  margin-right: 40px;
+`;
+const CoordInputContainer = styled(View)`
+  border-radius: 24px;
+  height: 50px;
   flex: 1;
-  border-radius: 23px;
+  border: 1px solid lightgray;
+  justify-content: center;
+  align-items: center;
+`;
+const CoordInputText = styled(Text)`
+  font-weight: 700;
+  color: #707070;
+  font-size: 16px;
 `;
 
 const FooterContainer = styled(View)`
@@ -116,87 +134,52 @@ const FooterButtonText = styled(Text)`
   color: #707070;
 `;
 
-interface ChooseLocationScreenProps {
+interface SendLocationScreenProps {
   navigation: any;
+  route: any;
 }
 
-type Coords = {latitude: number; longitude: number};
-
-const initialRegion = {
-  latitude: 55.750976,
-  longitude: 37.615932,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-};
-
-export const ChooseLocationScreen: React.FC<ChooseLocationScreenProps> = ({
+export const SendLocationScreen: React.FC<SendLocationScreenProps> = ({
   navigation,
+  route,
 }) => {
   const {bottom} = useSafeAreaInsets();
+  const {
+    markerState: {latitude, longitude},
+  } = route.params;
+  const [trackId] = React.useContext(Context);
 
-  const mapRef = React.useRef<MapView>(null);
-  const [markerState, setMarkerState] = React.useState<Coords | null>(null);
-  const [trackId, setTrackId] = React.useContext(Context);
-
-  const handlePress = ({nativeEvent: {coordinate}}) => {
-    setMarkerState({
-      latitude: Math.floor(coordinate.latitude * 100000) / 100000,
-      longitude: Math.floor(coordinate.longitude * 100000) / 100000,
-    });
-  };
-
-  const handleConfirm = async () => {
-    if (markerState === null) {
-      Alert.alert('Выберите позицию!');
-      return;
-    }
-
-    if (trackId === null) {
-      const result = await fetch('http://test-spotapp.ru:8080/start_track', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await result.json();
-      const setId = await setTrackId(data.track_id);
-      navigation.navigate(ROUTES.SendLocationScreen, {
-        markerState,
-      });
-    } else {
-      navigation.navigate(ROUTES.SendLocationScreen, {
-        markerState,
-      });
-    }
-  };
-
-  const animateToRegion = () => {
-    if (!mapRef.current) {
-      return;
-    }
-    const region = {
-      latitude: markerState?.latitude || initialRegion.latitude,
-      longitude: markerState?.longitude || initialRegion.longitude,
-      latitudeDelta: initialRegion.latitudeDelta,
-      longitudeDelta: initialRegion.longitudeDelta,
+  const handleSend = async () => {
+    const data = {
+      longitude: longitude,
+      latitude: latitude,
+      track_id: trackId,
     };
-    mapRef.current.animateToRegion(region);
-  };
 
-  React.useEffect(() => {
-    animateToRegion();
-    // eslint-disable-next-line
-  }, [markerState]);
+    const result = await fetch('http://test-spotapp.ru:8080/save_track_point', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (result.status === 200) {
+      navigation.navigate(ROUTES.CheckScreen);
+    }
+  };
 
   return (
     <Container>
       <HeaderContainer>
-        <BackButtonContainer style={styles.smallRoundBtnWhite}>
-          <BackButtonContainer style={styles.smallRoundBtnBlack}>
-            <Arrow style={styles.arrow} />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <BackButtonContainer style={styles.smallRoundBtnWhite}>
+            <BackButtonContainer style={styles.smallRoundBtnBlack}>
+              <Arrow style={styles.arrow} />
+            </BackButtonContainer>
           </BackButtonContainer>
-        </BackButtonContainer>
+        </TouchableOpacity>
 
         <MyLocButtonContainerOut style={styles.smallRoundBtnWhite}>
           <MyLocButtonContainerIn style={styles.smallRoundBtnBlack}>
@@ -215,29 +198,28 @@ export const ChooseLocationScreen: React.FC<ChooseLocationScreenProps> = ({
       </HeaderContainer>
 
       <MainContainer>
-        <MainText>Выберите вашу геопозицию</MainText>
-        <View style={{height: 290}}>
-          <MapViewContainer
-            ref={mapRef}
-            showsUserLocation
-            initialRegion={initialRegion}
-            onPress={handlePress}>
-            {markerState ? (
-              <Marker
-                coordinate={markerState}
-                image={require('../../assets/Maps_Icon.png')}
-                centerOffset={{x: -2, y: -29}}
-              />
-            ) : null}
-          </MapViewContainer>
-        </View>
+        <MainText>Отправьте выбранную геопозицию</MainText>
+        <CoordMainContainer>
+          <CoordEntryContainer>
+            <CoordNameText>Широта</CoordNameText>
+            <CoordInputContainer>
+              <CoordInputText>{latitude}</CoordInputText>
+            </CoordInputContainer>
+          </CoordEntryContainer>
+          <CoordEntryContainer style={styles.mt_40}>
+            <CoordNameText>Долгота</CoordNameText>
+            <CoordInputContainer>
+              <CoordInputText>{longitude}</CoordInputText>
+            </CoordInputContainer>
+          </CoordEntryContainer>
+        </CoordMainContainer>
       </MainContainer>
 
       <FooterContainer isSafeArea={bottom}>
-        <TouchableOpacity onPress={handleConfirm}>
+        <TouchableOpacity onPress={handleSend}>
           <FooterButtonContainerOut style={styles.smallRoundBtnWhite}>
             <FooterButtonContainerIn style={styles.smallRoundBtnBlack}>
-              <FooterButtonText>Выбрать</FooterButtonText>
+              <FooterButtonText>Отправить</FooterButtonText>
             </FooterButtonContainerIn>
           </FooterButtonContainerOut>
         </TouchableOpacity>
@@ -267,5 +249,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.6,
     shadowRadius: 15.0,
+  },
+  mt_40: {
+    marginTop: 40,
   },
 });
