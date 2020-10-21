@@ -9,60 +9,13 @@ import Location_Icon from '../../assets/Location_Icon.svg';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ROUTES} from '../../navigation/Routes';
 
+import {HeaderComponent} from '../../components/header-component/HeaderComponent';
+
 import {Context} from '../../Context';
 
 const Container = styled(SafeAreaView)`
   flex: 1;
   background-color: #ecf0f3;
-`;
-
-const HeaderContainer = styled(View)`
-  padding: 30px;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const XButtonContainer = styled(View)`
-  background-color: #ecf0f3;
-  height: 47px;
-  width: 47px;
-  border-radius: 23.5px;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-`;
-
-const MyLocButtonContainerOut = styled(View)`
-  background-color: #ecf0f3;
-  width: 108px;
-  height: 108px;
-  border-radius: 54px;
-  margin-top: 11px;
-`;
-
-const MyLocButtonContainerIn = styled(View)`
-  background-color: #ecf0f3;
-  width: 108px;
-  height: 108px;
-  border-radius: 54px;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0 18px 0;
-`;
-
-const MyLocText = styled(Text)`
-  font-size: 16px;
-  font-weight: 700;
-  color: #707070;
-`;
-
-const BackButtonContainer = styled(View)`
-  background-color: #ecf0f3;
-  height: 47px;
-  width: 47px;
-  border-radius: 23.5px;
-  justify-content: center;
-  align-items: center;
 `;
 
 const MainContainer = styled(View)`
@@ -172,30 +125,7 @@ export const SendLocationScreen: React.FC<SendLocationScreenProps> = ({
 
   return (
     <Container>
-      <HeaderContainer>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <BackButtonContainer style={styles.smallRoundBtnWhite}>
-            <BackButtonContainer style={styles.smallRoundBtnBlack}>
-              <Arrow style={styles.arrow} />
-            </BackButtonContainer>
-          </BackButtonContainer>
-        </TouchableOpacity>
-
-        <MyLocButtonContainerOut style={styles.smallRoundBtnWhite}>
-          <MyLocButtonContainerIn style={styles.smallRoundBtnBlack}>
-            <Location_Icon />
-            <MyLocText>MyLoc</MyLocText>
-          </MyLocButtonContainerIn>
-        </MyLocButtonContainerOut>
-
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <XButtonContainer style={styles.smallRoundBtnWhite}>
-            <XButtonContainer style={styles.smallRoundBtnBlack}>
-              <Xbutton />
-            </XButtonContainer>
-          </XButtonContainer>
-        </TouchableOpacity>
-      </HeaderContainer>
+      <HeaderComponent navigation={navigation} backbutton xbutton={false} />
 
       <MainContainer>
         <MainText>Отправьте выбранную геопозицию</MainText>
