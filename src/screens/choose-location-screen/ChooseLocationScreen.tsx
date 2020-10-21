@@ -11,6 +11,8 @@ import {ROUTES} from '../../navigation/Routes';
 import {HeaderComponent} from '../../components/header-component/HeaderComponent';
 
 import {Context} from '../../Context';
+import Geolocation from '@react-native-community/geolocation';
+import {notify} from '../../utils/notifier';
 
 const Container = styled(SafeAreaView)`
   flex: 1;

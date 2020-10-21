@@ -55,8 +55,6 @@ export const QuitScreen: React.FC<QuitScreenProps> = ({
   navigation: any;
 }) => {
   const handleNope = () => {
-    console.log('hello');
-
     navigation.navigate(ROUTES.ChooseLocationScreen);
   };
 

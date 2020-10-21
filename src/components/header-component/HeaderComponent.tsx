@@ -8,7 +8,7 @@ import Arrow from '../../assets/Arrow.svg';
 import Xbutton from '../../assets/Xbutton.svg';
 import Location_Icon from '../../assets/Location_Icon.svg';
 import {notify} from '../../utils/notifier';
-import { ROUTES } from '../../navigation/Routes';
+import {ROUTES} from '../../navigation/Routes';
 
 const HeaderContainer = styled(View)`
   padding: 30px;
@@ -77,7 +77,6 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
   xbutton,
   handleLocation,
 }) => {
-
   const handleBackPress = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -86,7 +85,7 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
 
   const handleLogout = () => {
     navigation.navigate(ROUTES.QuitScreen);
-  }
+  };
 
   const handleAskLocation = () => {
     Geolocation.getCurrentPosition(
@@ -115,7 +114,7 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
 
   return (
     <HeaderContainer>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={handleBackPress}>
         <BackButtonContainer
           backbutton={backbutton}
           style={styles.smallRoundBtnWhite}>

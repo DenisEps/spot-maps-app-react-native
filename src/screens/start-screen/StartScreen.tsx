@@ -1,4 +1,4 @@
-import { useNavigationState } from '@react-navigation/native';
+import {useNavigationState} from '@react-navigation/native';
 import React from 'react';
 import {Text, TouchableHighlight} from 'react-native';
 import styled from 'styled-components';
@@ -24,10 +24,10 @@ interface StartScreenProps {
 }
 
 export const StartScreen: React.FC<StartScreenProps> = ({navigation}) => {
-  const state = useNavigationState(state => state);
+  const state = useNavigationState((state) => state);
   React.useEffect(() => {
-    console.log(state)
-  }, [state])
+    console.log(state);
+  }, [state]);
   return (
     <TouchContainer
       activeOpacity={0}
