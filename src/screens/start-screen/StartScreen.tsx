@@ -1,3 +1,4 @@
+import { useNavigationState } from '@react-navigation/native';
 import React from 'react';
 import {Text, TouchableHighlight} from 'react-native';
 import styled from 'styled-components';
@@ -23,11 +24,15 @@ interface StartScreenProps {
 }
 
 export const StartScreen: React.FC<StartScreenProps> = ({navigation}) => {
+  const state = useNavigationState(state => state);
+  React.useEffect(() => {
+    console.log(state)
+  }, [state])
   return (
     <TouchContainer
       activeOpacity={0}
       underlayColor="#DDDDDD"
-      onPress={() => navigation.navigate(ROUTES.ButtonScreen)}>
+      onPress={() => navigation.replace(ROUTES.ButtonScreen)}>
       <WelcomeText>Нажмите на экран</WelcomeText>
     </TouchContainer>
   );

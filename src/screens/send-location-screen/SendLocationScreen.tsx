@@ -89,6 +89,8 @@ interface SendLocationScreenProps {
   route: any;
 }
 
+type Coords = {latitude: number; longitude: number};
+
 export const SendLocationScreen: React.FC<SendLocationScreenProps> = ({
   navigation,
   route,
@@ -97,7 +99,9 @@ export const SendLocationScreen: React.FC<SendLocationScreenProps> = ({
   const {
     markerState: {latitude, longitude},
   } = route.params;
-  const [trackId] = React.useContext(Context);
+  const {track, marker} = React.useContext(Context);
+  const [trackId, setTrackId] = track;
+  const [_, setMarker] = marker;
 
   const handleSend = async () => {
     const data = {
@@ -120,9 +124,22 @@ export const SendLocationScreen: React.FC<SendLocationScreenProps> = ({
     }
   };
 
+  const handleLocation = React.useCallback(
+    (loc: Coords) => {
+      setMarker(loc);
+      navigation.navigate(ROUTES.ChooseLocationScreen);
+    },
+    [navigation],
+  );
+
   return (
     <Container>
-      <HeaderComponent navigation={navigation} backbutton xbutton={false} />
+      <HeaderComponent
+        navigation={navigation}
+        backbutton
+        xbutton={false}
+        handleLocation={handleLocation}
+      />
 
       <MainContainer>
         <MainText>Отправьте выбранную геопозицию</MainText>

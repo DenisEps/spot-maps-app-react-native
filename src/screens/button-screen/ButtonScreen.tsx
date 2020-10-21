@@ -41,7 +41,7 @@ export const ButtonScreen: React.FC<StartScreenProps> = ({navigation}) => {
   return (
     <Container>
       <TouchableOpacity
-        onPress={() => navigation.navigate(ROUTES.ChooseLocationScreen)}>
+        onPress={() => navigation.replace(ROUTES.ChooseLocationScreen)}>
         <ButtonContainer style={styles.buttonContainerBlack}>
           <ButtonContainer style={styles.buttonContainerWhite}>
             <ButtonText>Начать</ButtonText>

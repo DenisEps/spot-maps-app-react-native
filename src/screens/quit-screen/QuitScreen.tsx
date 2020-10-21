@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styled from 'styled-components';
+import {ROUTES} from '../../navigation/Routes';
 
 const Container = styled(View)`
   flex: 1;
@@ -44,18 +45,37 @@ const ButtonText = styled(Text)`
   color: ${(props) => (props.green ? '#559D52' : '#FF5A5A')};
 `;
 
-interface QuitScreenProps {}
+interface QuitScreenProps {
+  navigation: any;
+}
 
-export const QuitScreen: React.FC<QuitScreenProps> = ({}) => {
+export const QuitScreen: React.FC<QuitScreenProps> = ({
+  navigation,
+}: {
+  navigation: any;
+}) => {
+  const handleNope = () => {
+    console.log('hello');
+
+    navigation.navigate(ROUTES.ChooseLocationScreen);
+  };
+
+  const handleYes = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{name: ROUTES.ButtonScreen}],
+    });
+  };
+
   return (
     <Container>
       <ModalContainer>
         <ModalText>Уверены, что хотите выйти?</ModalText>
         <OptionsContainer>
-          <ButtonContainer>
+          <ButtonContainer onPress={() => handleYes()}>
             <ButtonText green>Да</ButtonText>
           </ButtonContainer>
-          <ButtonContainer>
+          <ButtonContainer onPress={() => handleNope()}>
             <ButtonText red>Нет</ButtonText>
           </ButtonContainer>
         </OptionsContainer>

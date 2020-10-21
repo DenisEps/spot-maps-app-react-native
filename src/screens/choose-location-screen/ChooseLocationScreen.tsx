@@ -85,8 +85,9 @@ export const ChooseLocationScreen: React.FC<ChooseLocationScreenProps> = ({
   const {bottom} = useSafeAreaInsets();
 
   const mapRef = React.useRef<MapView>(null);
-  const [markerState, setMarkerState] = React.useState<Coords | null>(null);
-  const [trackId, setTrackId] = React.useContext(Context);
+  const {marker, track} = React.useContext(Context);
+  const [trackId, setTrackId] = track;
+  const [markerState, setMarkerState] = marker;
 
   const handlePress = ({nativeEvent: {coordinate}}) => {
     setMarkerState({
@@ -94,6 +95,10 @@ export const ChooseLocationScreen: React.FC<ChooseLocationScreenProps> = ({
       longitude: Math.floor(coordinate.longitude * 100000) / 100000,
     });
   };
+
+  const handleLocation = React.useCallback((loc: Coords) => {
+    setMarkerState(loc);
+  }, []);
 
   const handleConfirm = async () => {
     if (markerState === null) {
@@ -141,7 +146,12 @@ export const ChooseLocationScreen: React.FC<ChooseLocationScreenProps> = ({
 
   return (
     <Container>
-      <HeaderComponent navigation={navigation} xbutton backbutton={false} />
+      <HeaderComponent
+        navigation={navigation}
+        xbutton
+        backbutton={false}
+        handleLocation={handleLocation}
+      />
 
       <MainContainer>
         <MainText>Выберите вашу геопозицию</MainText>

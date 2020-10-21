@@ -1,11 +1,14 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Linking} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import styled from 'styled-components';
+import Geolocation from '@react-native-community/geolocation';
 
 import Arrow from '../../assets/Arrow.svg';
 import Xbutton from '../../assets/Xbutton.svg';
 import Location_Icon from '../../assets/Location_Icon.svg';
+import {notify} from '../../utils/notifier';
+import { ROUTES } from '../../navigation/Routes';
 
 const HeaderContainer = styled(View)`
   padding: 30px;
@@ -61,13 +64,55 @@ interface HeaderComponentProps {
   navigation: any;
   backbutton: boolean;
   xbutton: boolean;
+  handleLocation?: (loc: {latitude: number; longitude: number}) => void;
 }
+
+const handleOpenSettings = () => {
+  Linking.openSettings();
+};
 
 export const HeaderComponent: React.FC<HeaderComponentProps> = ({
   navigation,
   backbutton,
   xbutton,
+  handleLocation,
 }) => {
+
+  const handleBackPress = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  };
+
+  const handleLogout = () => {
+    navigation.navigate(ROUTES.QuitScreen);
+  }
+
+  const handleAskLocation = () => {
+    Geolocation.getCurrentPosition(
+      (pos) => {
+        const {
+          coords: {latitude, longitude},
+        } = pos;
+        if (handleLocation) {
+          handleLocation({latitude, longitude});
+        }
+      },
+      (error) => {
+        console.warn(error.message);
+        notify({
+          message: '⛔️ Нет доступа к геолокации',
+          description: 'Нажмите, чтобы предоставить',
+          type: 'danger',
+          backgroundColor: '#fff',
+          floating: true,
+          duration: 4500,
+          onPress: handleOpenSettings,
+        });
+      },
+    );
+  };
+
   return (
     <HeaderContainer>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -82,14 +127,16 @@ export const HeaderComponent: React.FC<HeaderComponentProps> = ({
         </BackButtonContainer>
       </TouchableOpacity>
 
-      <MyLocButtonContainerOut style={styles.smallRoundBtnWhite}>
-        <MyLocButtonContainerIn style={styles.smallRoundBtnBlack}>
-          <Location_Icon />
-          <MyLocText>MyLoc</MyLocText>
-        </MyLocButtonContainerIn>
-      </MyLocButtonContainerOut>
+      <TouchableOpacity onPress={handleAskLocation}>
+        <MyLocButtonContainerOut style={styles.smallRoundBtnWhite}>
+          <MyLocButtonContainerIn style={styles.smallRoundBtnBlack}>
+            <Location_Icon />
+            <MyLocText>MyLoc</MyLocText>
+          </MyLocButtonContainerIn>
+        </MyLocButtonContainerOut>
+      </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={handleLogout}>
         <XButtonContainer xbutton={xbutton} style={styles.smallRoundBtnWhite}>
           <XButtonContainer xbutton={xbutton} style={styles.smallRoundBtnBlack}>
             <Xbutton />

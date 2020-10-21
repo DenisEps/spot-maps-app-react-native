@@ -122,9 +122,12 @@ interface CheckScreenProps {
 
 export const CheckScreen: React.FC<CheckScreenProps> = ({navigation}) => {
   const {bottom} = useSafeAreaInsets();
-  const [trackId] = React.useContext(Context);
   const [points, setPoints] = React.useState(null);
   const [currentPoint, setCurrentPoint] = React.useState();
+
+  const {track, marker} = React.useContext(Context);
+  const [trackId, setTrackId] = track;
+  const [_, setMarker] = marker;
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -142,6 +145,14 @@ export const CheckScreen: React.FC<CheckScreenProps> = ({navigation}) => {
     fetchData();
   }, []);
 
+  const handleLocation = React.useCallback(
+    (loc: Coords) => {
+      setMarker(loc);
+      navigation.navigate(ROUTES.ChooseLocationScreen);
+    },
+    [navigation],
+  );
+
   const handleSetCurrentPoint = async (index) => {
     const point = points[index];
     await setCurrentPoint({
@@ -153,7 +164,12 @@ export const CheckScreen: React.FC<CheckScreenProps> = ({navigation}) => {
 
   return (
     <Container>
-      <HeaderComponent navigation={navigation} backbutton xbutton={false} />
+      <HeaderComponent
+        navigation={navigation}
+        backbutton
+        xbutton={false}
+        handleLocation={handleLocation}
+      />
 
       <MainContainer>
         <MainText>Проверьте добавленные точки</MainText>
